@@ -16,10 +16,13 @@ def verify():
         return "Verification failed", 403
 
 @app.route("/", methods=["POST"])
+@app.route("/", methods=["POST"])
 def webhook():
     data = request.get_json()
-    print("📩 Received message:", data)
+    print("📩 Received message data:")
+    print(data)  # 👈 This will show the full message payload in Render logs
     return "OK", 200
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
