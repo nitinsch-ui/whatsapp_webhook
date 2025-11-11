@@ -26,24 +26,30 @@ def webhook():
     print("📩 Received message data:", data, flush=True)
 
     try:
-        message = data["entry"][0]["changes"][0]["value"]["messages"][0]
-        from_number = message["from"]
-        text = message.get("text", {}).get("body", "").strip()
+        value = data["entry"][0]["changes"][0]["value"]
 
-        today = str(date.today())
+        # Only parse if there are actual messages
+        if "messages" in value:
+            message = value["messages"][0]
+            from_number = message["from"]
+            text = message.get("text", {}).get("body", "").strip()
 
-        # If user sends the daily tasks
-        if text.lower().startswith("tasks"):
-            tasks = [line.strip("- ").strip() for line in text.splitlines()[1:] if line.strip()]
-            # Store as list of dicts with done=False
-            task_data[today] = [{"task": t, "done": False} for t in tasks]
+            today = str(date.today())
 
-            send_whatsapp_message(from_number, f"✅ Your tasks for {today} have been stored:\n" +
-                                  "\n".join([f"- {t}" for t in tasks]))
+            if text.lower().startswith("tasks"):
+                tasks = [line.strip("- ").strip() for line in text.splitlines()[1:] if line.strip()]
+                task_data[today] = [{"task": t, "done": False} for t in tasks]
+
+                send_whatsapp_message(from_number, f"✅ Your tasks for {today} have been stored:\n" +
+                                      "\n".join([f"- {t}" for t in tasks]))
+        else:
+            print("ℹ️ No messages to process, ignoring status update.", flush=True)
+
     except Exception as e:
         print("⚠️ Error parsing message:", e, flush=True)
 
     return "OK", 200
+
 
 
 
