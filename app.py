@@ -18,7 +18,7 @@ def verify():
 @app.route("/", methods=["POST"])
 def webhook():
     data = request.get_json()
-    print("📩 Received message data:", data)  # This prints the actual WhatsApp message JSON
+    print("📩 Received message data:", data, flush=True)  # flush=True forces Render to show it immediately
     return "OK", 200
 
 
