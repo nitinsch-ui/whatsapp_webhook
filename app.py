@@ -16,12 +16,16 @@ def verify():
     token = request.args.get("hub.verify_token")
     challenge = request.args.get("hub.challenge")
 
+    # Debug prints to see what Meta sent
+    print("📌 Verification request:", request.args)
+
     if mode == "subscribe" and token == VERIFY_TOKEN:
-        print("✅ Webhook verified successfully", flush=True)
-        return challenge, 200
+        print("✅ Webhook verified successfully")
+        return challenge, 200  # plain text
     else:
-        print("❌ Verification failed", flush=True)
+        print(f"❌ Verification failed: mode={mode}, token={token}")
         return "Verification failed", 403
+
 
 
 # -------------------------------
